@@ -140,29 +140,28 @@ node_t * getNode(elem value) {
 
 void list_add_at_index(list_t *l, elem value, int index) {
     if (l == NULL) return;
-
     int len = list_length(l);
-    if (index <= 1 || l->head == NULL) {
+    if (index <= 0 || l->head == NULL) {
         list_add_to_front(l, value);
         return;
     }
-    if (index > len) {
+    if (index >= len) {
         list_add_to_back(l, value);
         return;
     }
-
     node_t *prev = l->head;
     int i;
-    for (i = 1; i < index - 1 && prev != NULL; i++) {
+    for (i = 0; i < index - 1; i++) {
         prev = prev->next;
     }
-    if (prev == NULL) return;
-
     node_t *n = getNode(value);
     if (!n) return;
     n->next = prev->next;
     prev->next = n;
 }
+
+
+
 
 
 
@@ -180,8 +179,7 @@ elem list_remove_from_back(list_t *l) {
         cur = cur->next;
     }
     elem v = cur->value;
-    if (prev != NULL) prev->next = NULL;
-    else l->head = NULL;
+    if (prev) prev->next = NULL; else l->head = NULL;
     free(cur);
     return v;
 }
@@ -197,30 +195,21 @@ elem list_remove_from_front(list_t *l) {
 
 elem list_remove_at_index(list_t *l, int index) {
     if (l == NULL || l->head == NULL) return -1;
-    if (index <= 0) return -1;
-    if (index == 1) return list_remove_from_front(l);
-
+    if (index < 0) return -1;
+    if (index == 0) return list_remove_from_front(l);
     int len = list_length(l);
-    if (index > len) return -1;
-
+    if (index >= len) return -1;
     node_t *prev = l->head;
     int i;
-    for (i = 1; i < index - 1 && prev->next != NULL; i++) {
+    for (i = 0; i < index - 1; i++) {
         prev = prev->next;
     }
     node_t *cur = prev->next;
     if (cur == NULL) return -1;
-
     elem v = cur->value;
     prev->next = cur->next;
     free(cur);
     return v;
-}
-
-
-
-
-
 
 
 bool list_is_in(list_t *l, elem value) {
